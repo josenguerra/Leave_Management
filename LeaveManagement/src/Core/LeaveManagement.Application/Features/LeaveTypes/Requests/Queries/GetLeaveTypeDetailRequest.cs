@@ -1,7 +1,7 @@
 ﻿using LeaveManagement.Application.DTOs.LeaveType;
 using MediatR;
 
-namespace LeaveManagement.Application.Features.LeaveType.Requests.Queries
+namespace LeaveManagement.Application.Features.LeaveTypes.Requests.Queries
 {
     public class GetLeaveTypeDetailRequest : IRequest<LeaveTypeDto>
     {
