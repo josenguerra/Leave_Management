@@ -1,10 +1,11 @@
 ﻿using LeaveManagement.Application.DTOs.LeaveType;
+using LeaveManagement.Application.Responses;
 using MediatR;
 
 namespace LeaveManagement.Application.Features.LeaveTypes.Requests.Commands
 {
-    public class CreateLeaveTypeCommand : IRequest<int>
+    public class CreateLeaveTypeCommand : IRequest<BaseCommandResponse>
     {
-        public LeaveTypeDto LeaveTypeDto { get; set; }
+        public CreateLeaveTypeDto LeaveTypeDto { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LeaveManagement.Application.Contracts.Persistence;
+using LeaveManagement.Application.DTOs.LeaveRequest.Validators;
 using LeaveManagement.Application.Features.LeaveRequests.Requests.Commands;
 using LeaveManagement.Application.Responses;
 using LeaveManagement.Domain;
@@ -9,26 +10,48 @@ namespace LeaveManagement.Application.Features.LeaveRequests.Handlers.Commands
 {
     public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveRequestCommand, BaseCommandResponse>
     {
-        private readonly ILeaveRequestRepository _leaveRequestRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
-        public CreateLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository,
-             IMapper mapper)
+        public CreateLeaveRequestCommandHandler(
+            IUnitOfWork unitOfWork,
+            IEmailSender emailSender,
+            IHttpContextAccessor httpContextAccessor,
+            IMapper mapper)
         {
-            _leaveRequestRepository = leaveRequestRepository;
+            this._unitOfWork = unitOfWork;
+            _emailSender = emailSender;
+            this._httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
         public async Task<BaseCommandResponse> Handle(CreateLeaveRequestCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseCommandResponse();
-            var leaveRequest = _mapper.Map<LeaveRequest>(request.LeaveRequestDto);
+            var validator = new CreateLeaveRequestDtoValidator(_unitOfWork.LeaveTypeRepository);
+            var validationResult = await validator.ValidateAsync(request.LeaveRequestDto);
+            if (validationResult.IsValid == false)
+            {
+                response.Success = false;
+                response.Message = "Request Failed";
+                response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
+            }
+            else
+            {
+                var leaveRequest = _mapper.Map<LeaveRequest>(request.LeaveRequestDto);
+            
+                leaveRequest = await _unitOfWork.LeaveRequestRepository.Add(leaveRequest);
+                await _unitOfWork.Save();
 
-            leaveRequest = await _leaveRequestRepository.Add(leaveRequest);
+                response.Success = true;
+                response.Message = "Request Created Successfully";
+                response.Id = leaveRequest.Id;
 
-            response.Success = true;
-            response.Message = "Request Created Successfully";
-            response.Id = leaveRequest.Id;
+              
+            }
+
             return response;
         }
     }
