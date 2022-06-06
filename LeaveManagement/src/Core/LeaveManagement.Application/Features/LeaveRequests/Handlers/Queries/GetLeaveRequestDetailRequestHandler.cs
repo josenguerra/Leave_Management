@@ -4,7 +4,7 @@ using LeaveManagement.Application.DTOs.LeaveRequest;
 using LeaveManagement.Application.Features.LeaveRequests.Requests.Queries;
 using MediatR;
 
-namespace LeaveManagement.Application.Features.LeaveRequests.Requests.Commands
+namespace LeaveManagement.Application.Features.LeaveRequests.Handlers.Queries
 {
     public class GetLeaveRequestDetailRequestHandler : IRequestHandler<GetLeaveRequestDetailRequest, LeaveRequestDto>
     {
