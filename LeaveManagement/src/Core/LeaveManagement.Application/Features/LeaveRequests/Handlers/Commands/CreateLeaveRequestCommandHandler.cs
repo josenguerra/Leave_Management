@@ -11,19 +11,13 @@ namespace LeaveManagement.Application.Features.LeaveRequests.Handlers.Commands
     public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveRequestCommand, BaseCommandResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEmailSender _emailSender;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
         public CreateLeaveRequestCommandHandler(
             IUnitOfWork unitOfWork,
-            IEmailSender emailSender,
-            IHttpContextAccessor httpContextAccessor,
             IMapper mapper)
         {
             this._unitOfWork = unitOfWork;
-            _emailSender = emailSender;
-            this._httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
 
