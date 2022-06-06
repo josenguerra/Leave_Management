@@ -4,11 +4,6 @@ using LeaveManagement.Application.Features.LeaveRequests.Requests.Commands;
 using LeaveManagement.Application.Responses;
 using LeaveManagement.Domain;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LeaveManagement.Application.Features.LeaveRequests.Handlers.Commands
 {
