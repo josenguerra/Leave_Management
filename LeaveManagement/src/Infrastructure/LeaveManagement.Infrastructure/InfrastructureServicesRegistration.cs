@@ -1,4 +1,5 @@
 ﻿using LeaveManagement.Application.Contracts.Infrastrucutre;
+using LeaveManagement.Application.Models;
 using LeaveManagement.Infrastructure.Mail;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿namespace LeaveManagement.Application.Contracts.Infrastrucutre
+﻿namespace LeaveManagement.Application.Models
 {
     public class EmailSettings
     {
