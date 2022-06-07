@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,10 +19,6 @@
     <ProjectReference Include="..\..\Core\LeaveManagement.Application\LeaveManagement.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LeaveManagement.Infrastructure\LeaveManagement.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LeaveManagement.Persistence\LeaveManagement.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
