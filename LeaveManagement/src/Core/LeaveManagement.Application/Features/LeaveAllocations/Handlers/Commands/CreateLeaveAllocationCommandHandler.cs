@@ -1,28 +1,26 @@
 ﻿using AutoMapper;
-using LeaveManagement.Application.Contracts.Persistence;
 using LeaveManagement.Application.DTOs.LeaveAllocation.Validator;
 using LeaveManagement.Application.Features.LeaveAllocations.Requests.Commands;
-using LeaveManagement.Application.Responses;
+using LeaveManagement.Application.Contracts.Persistence;
 using LeaveManagement.Domain;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using LeaveManagement.Application.Responses;
+using LeaveManagement.Application.Contracts.Identity;
 namespace LeaveManagement.Application.Features.LeaveAllocations.Handlers.Commands
 {
     public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAllocationCommand, BaseCommandResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
         public CreateLeaveAllocationCommandHandler(
            IUnitOfWork unitOfWork,
+            IUserService userService,
             IMapper mapper)
         {
             this._unitOfWork = unitOfWork;
+            this._userService = userService;
             _mapper = mapper;
         }
 
@@ -41,10 +39,21 @@ namespace LeaveManagement.Application.Features.LeaveAllocations.Handlers.Command
             else
             {
                 var leaveType = await _unitOfWork.LeaveTypeRepository.Get(request.LeaveAllocationDto.LeaveTypeId);
-                
+                var employees = await _userService.GetEmployees();
                 var period = DateTime.Now.Year;
                 var allocations = new List<LeaveAllocation>();
-              
+                foreach (var emp in employees)
+                {
+                    if (await _unitOfWork.LeaveAllocationRepository.AllocationExists(emp.Id, leaveType.Id, period))
+                        continue;
+                    allocations.Add(new LeaveAllocation
+                    {
+                        EmployeeId = emp.Id,
+                        LeaveTypeId = leaveType.Id,
+                        NumberOfDays = leaveType.DefaultDays,
+                        Period = period
+                    });
+                }
 
                 await _unitOfWork.LeaveAllocationRepository.AddAllocations(allocations);
                 await _unitOfWork.Save();

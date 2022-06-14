@@ -1,8 +1,11 @@
-﻿using LeaveManagement.Application.DTOs.LeaveRequest;
+﻿using LeaveManagement.Application.DTOs.LeaveAllocation;
+using LeaveManagement.Application.DTOs.LeaveRequest;
+using LeaveManagement.Application.Features.LeaveAllocations.Requests.Queries;
 using LeaveManagement.Application.Features.LeaveRequests.Requests.Commands;
 using LeaveManagement.Application.Features.LeaveRequests.Requests.Queries;
 using LeaveManagement.Application.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,6 +14,7 @@ namespace LeaveManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LeaveRequestsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,9 +26,9 @@ namespace LeaveManagement.API.Controllers
 
         // GET: api/<LeaveRequestsController>
         [HttpGet]
-        public async Task<ActionResult<List<LeaveRequestListDto>>> Get()
+        public async Task<ActionResult<List<LeaveRequestListDto>>> Get(bool isLoggedInUser = false)
         {
-            var leaveRequests = await _mediator.Send(new GetLeaveRequestListRequest());
+            var leaveRequests = await _mediator.Send(new GetLeaveRequestListRequest() { IsLoggedInUser = isLoggedInUser });
             return Ok(leaveRequests);
         }
 
